@@ -1,16 +1,13 @@
 import pytest
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selene import browser
 
 
-@pytest.fixture(scope="function")
-def driver():
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--window-size=1280,720")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=options)
-    yield driver
-    driver.quit()
-
+@pytest.fixture(autouse=True, scope='function')
+def selene_setup():
+    # Упрощённая HTML-версия DuckDuckGo — стабильный DOM
+    browser.config.base_url = 'https://html.duckduckgo.com'
+    browser.config.timeout = 8
+    browser.config.window_width = 1280
+    browser.config.window_height = 900
+    yield
+    browser.quit()
