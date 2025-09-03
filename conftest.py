@@ -1,11 +1,16 @@
 import pytest
-from selene import browser
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
-@pytest.fixture(autouse=True, scope='function')
-def selene_setup():
 
-    browser.config.base_url = 'https://www.google.com'
-    browser.config.window_width = '1280'
-    browser.config.window_height = '720'
-    yield
-    browser.quit()
+@pytest.fixture(scope="function")
+def driver():
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--window-size=1280,720")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = webdriver.Chrome(options=options)
+    yield driver
+    driver.quit()
+
